@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "outDir": "./bin/",
+    "sourceMap": true,
+    "noImplicitAny": false,
+    //    "strictNullChecks": true, // if null is not defined error is thrown (e.g. a =? B;)
+    "module": "commonjs",
+    "target": "es5",
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node",
+    "experimentalDecorators": true,
+    // needed to compile es6 with mocha
+    "lib": [
+      "es6",
+      "dom"
+    ]
+  },
+  "include": [
+    "src/**/*",
+    "test/**/*",
+    "typings/**/*.d.ts"
+  ],
+  "exclude": [
+    "node_modules"
+  ]
+}

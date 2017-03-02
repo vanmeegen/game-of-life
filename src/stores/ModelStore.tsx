@@ -13,7 +13,7 @@ export class ModelStore extends StoreBase {
 
   constructor() {
     super();
-    this.init(100, 100);
+    this.init(10, 10);
   }
 
   private init(x: number, y: number): void {
@@ -21,6 +21,18 @@ export class ModelStore extends StoreBase {
     this.x = x;
     this.y = y;
     this.NEIGHBOR_OFFSETS = [-1, -x - 1, -x, -x + 1, 1, x - 1, x, x + 1];
+    for (let i = 0; i < x * y; i++) {
+      this._board.push({isAlive: false, neighborCount: 0});
+    }
+  }
+
+  /**
+   * create a new board with randomly set life
+   * @param x x-size
+   * @param y y-size
+   */
+  private initRandom(x: number, y: number): void {
+    this.init(x, y);
     for (let i = 0; i < x * y; i++) {
       this._board.push({isAlive: Math.random() < 0.2, neighborCount: 0});
     }
@@ -72,17 +84,34 @@ export class ModelStore extends StoreBase {
     }
   }
 
+  private set(x: number, y: number, value: boolean) {
+    const index = this.index(x, y);
+    if (this.board[index].isAlive !== value) {
+      this.board[index].isAlive = value;
+      this.adjustNeighbors(index, value ? 1 : -1);
+    }
+  }
+
+  private index(x: number, y: number): number {
+    return x + this.x * y;
+  }
+
   accept(action: Action): void {
     log.debug("ModelStore accepting", action);
     switch (action.type) {
       case "reinit":
-        this.init(100, 100);
-        this.notify(action.type);
+        this.init(10, 10);
+        break;
+      case "initRandom":
+        this.initRandom(10, 10);
         break;
       case "next":
         this.calculateNextGeneration();
-        this.notify(action.type);
         break;
+      case "set":
+        const {x, y, value} = action.payload;
+        this.set(x, y, value);
     }
+    this.notify(action.type);
   }
 }

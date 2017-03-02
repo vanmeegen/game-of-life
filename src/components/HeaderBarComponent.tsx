@@ -9,6 +9,7 @@ import ReactNode = React.ReactNode;
  */
 interface LocalProps {
   title: string;
+  tooltip?: string;
   children?: ReactNode;
 
 }
@@ -23,7 +24,7 @@ export class HeaderBarComponent extends React.Component<LocalProps, any> {
   }
 
   render(): JSX.Element {
-    return      <div className="editor-bar">
+    return      <div className="editor-bar" title={this.props.tooltip || "unknown"}>
       <h3 className="editor-title">{this.props.title}</h3>
       <div className="editor-menu btn-group" role="group">
         {this.props.children}

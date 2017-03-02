@@ -1,6 +1,7 @@
 const webpack = require("webpack");
 
 module.exports = function (config) {
+  //noinspection JSUnresolvedFunction
   config.set({
     // start these browsers
     // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher

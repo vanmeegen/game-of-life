@@ -29,11 +29,11 @@ export class ModelStore extends StoreBase {
   }
 
   /**
-   * create a new board with randomly set life
-   * @param x x-size
-   * @param y y-size
+   * initializes board with randomly set life
    */
-  private initRandom(x: number, y: number): void {
+  private initRandom(): void {
+    const x = this.dimensions.x;
+    const y = this.dimensions.y;
     this.init(x, y);
     for (let i = 0; i < x * y; i++) {
       this._board[i].isAlive = Math.random() < 0.3;
@@ -104,18 +104,17 @@ export class ModelStore extends StoreBase {
     return x + this.x * y;
   }
 
-  public getBoard(): BoardType {
-    return this._board;
-  }
-
   accept(action: Action): void {
     log.debug("ModelStore accepting", action);
     switch (action.type) {
       case "clear":
-        this.init(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
+        this.init(this.dimensions.x, this.dimensions.y);
         break;
       case "initRandom":
-        this.initRandom(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
+        this.initRandom();
+        break;
+      case "size":
+        this.init(action.payload, action.payload);
         break;
       case "next":
         this.calculateNextGeneration();

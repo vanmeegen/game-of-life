@@ -19,7 +19,7 @@ html, body {
 
 .editor-container {
     flex: auto;
-    overflow: hidden;
+    overflow: auto;
 }
 
 .editor-header {
@@ -43,6 +43,17 @@ html, body {
     margin: 5px;
 }
 
+input[type="range"] {
+    display: inline-block;
+    margin-left: 1em;
+    width: 10em;
+    vertical-align: middle;
+}
+
+.slider-label {
+    display: inline-block;
+    margin: auto;
+}
 .board-border {
     stroke-width: 1;
     stroke: rgb(0, 0, 0);

@@ -16,3 +16,7 @@ export function clear(): void {
 export function set(x: number, y: number, value: boolean): void {
   Dispatcher.dispatch({type: "set", payload: {x, y, value}});
 }
+
+export function size(newSize: number): void {
+  Dispatcher.dispatch({type: "size", payload: newSize});
+}

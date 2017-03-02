@@ -3,6 +3,7 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.config');
 
+//noinspection JSDeprecatedSymbols
 const prodConfig = Object.assign({}, common, {
       plugins: [
         new webpack.NoErrorsPlugin(),

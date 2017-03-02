@@ -11,10 +11,6 @@ abstract class StoreBase {
     Dispatcher.register(this);
   }
 
-  close(): void {
-    Dispatcher.deregister(this);
-  }
-
   abstract accept(action: Action): void;
 
   register(listener: StoreListener): void {

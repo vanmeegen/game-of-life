@@ -54,9 +54,7 @@ export class ModelStore extends StoreBase {
   }
 
   /**
-   * adjust all neighbor counts of the given life by adding delta
-   * @param index
-   * @param delta
+   * calculate next life generation in board
    */
   private calculateNextGeneration(): void {
     for (let i = 0; i < this.x * this.y; i++) {
@@ -74,7 +72,7 @@ export class ModelStore extends StoreBase {
     }
   }
 
-  accept(action: Action) {
+  accept(action: Action): void {
     log.debug("ModelStore accepting", action);
     switch (action.type) {
       case "reinit":

@@ -60,7 +60,6 @@
       "ban-keywords"
     ],
     "whitespace": [
-      false,
       "check-branch",
       "check-decl",
       "check-operator",

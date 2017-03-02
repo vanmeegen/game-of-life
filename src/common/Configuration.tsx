@@ -3,9 +3,9 @@
  */
 export let __GIT_COMMIT__;
 export let __BUILD_NUMBER__;
-declare var __BUILD_TIME__;
-declare var __VERSION__;
-declare var __NODE_ENV__;
+export let __BUILD_TIME__;
+export let __VERSION__;
+export let __NODE_ENV__;
 
 // electron version: is delivered with __API_SERVER_URL__ set to localhost
 

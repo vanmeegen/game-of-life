@@ -11,23 +11,23 @@ abstract class StoreBase {
     Dispatcher.register(this);
   }
 
-  close() {
+  close(): void {
     Dispatcher.deregister(this);
   }
 
   abstract accept(action: Action): void;
 
-  register(listener: StoreListener) {
+  register(listener: StoreListener): void {
     this._listeners.add(listener);
   }
 
-  deregister(listener: StoreListener) {
+  deregister(listener: StoreListener): void {
     this._listeners.delete(listener);
   }
 
   // reason: any debugging help to get an idea what was the change reason
   // der eine Aussage über die Art der Änderung macht
-  protected notify(reason: any) {
+  protected notify(reason: any): void {
     this._listeners.forEach(listener => listener(reason));
   }
 

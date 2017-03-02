@@ -25,7 +25,10 @@ export class HeaderBarComponent extends React.Component<LocalProps, any> {
 
   render(): JSX.Element {
     return      <div className="editor-bar" title={this.props.tooltip || "unknown"}>
-      <h3 className="editor-title">{this.props.title}</h3>
+      <div>
+        <h3 className="editor-title">{this.props.title}</h3>
+        <a href="http://www.mvmsoft.de" style={{display: "block", marginLeft:"5px"}}>Author: Marco van Meegen</a>
+      </div>
       <div className="editor-menu btn-group" role="group">
         {this.props.children}
       </div>

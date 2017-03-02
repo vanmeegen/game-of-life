@@ -2,18 +2,20 @@ import {Action} from "../actions/Action";
 import StoreBase from "./StoreBase";
 import log from "../Logger";
 
-export type BoardType = {isAlive: boolean, neighborCount: number}[];
+export type BoardEntryType = {isAlive: boolean, neighborCount: number, lastNeighborCount?: number};
+export type BoardType = BoardEntryType[];
 export class ModelStore extends StoreBase {
 
   private x: number;
   private y: number;
   private _board: BoardType;
   private NEIGHBOR_OFFSETS: number[];
+  private static DEFAULT_SIZE: number = 50;
 
 
   constructor() {
     super();
-    this.init(10, 10);
+    this.init(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
   }
 
   private init(x: number, y: number): void {
@@ -34,7 +36,7 @@ export class ModelStore extends StoreBase {
   private initRandom(x: number, y: number): void {
     this.init(x, y);
     for (let i = 0; i < x * y; i++) {
-      this._board.push({isAlive: Math.random() < 0.2, neighborCount: 0});
+      this._board[i].isAlive = Math.random() < 0.3;
     }
     for (let i = 0; i < x * y; i++) {
       if (this._board[i].isAlive) {
@@ -43,8 +45,8 @@ export class ModelStore extends StoreBase {
     }
   }
 
-  public get board(): BoardType {
-    return this._board;
+  public board(x: number, y: number): BoardEntryType {
+    return this._board[this.index(x, y)];
   }
 
   public get dimensions(): {x: number, y: number} {
@@ -60,7 +62,7 @@ export class ModelStore extends StoreBase {
     for (const d of this.NEIGHBOR_OFFSETS) {
       const neighborIndex = index + d;
       if (neighborIndex >= 0 && neighborIndex < this.x * this.y) {
-        this._board[neighborIndex].neighborCount += d;
+        this._board[neighborIndex].neighborCount += delta;
       }
     }
   }
@@ -69,25 +71,31 @@ export class ModelStore extends StoreBase {
    * calculate next life generation in board
    */
   private calculateNextGeneration(): void {
+    // first save all neighborCounts in lastNeighborCount, then
+    this._board.forEach(x => x.lastNeighborCount = x.neighborCount);
+
     for (let i = 0; i < this.x * this.y; i++) {
       // if _board has 2 or 3 neighbors, stay alive
       // if _board has 3 neighbors, new born
 
-      const nc = this._board[i].neighborCount;
+      const nc = this._board[i].lastNeighborCount;
       const isAlive = this._board[i].isAlive;
       if (isAlive && (nc < 2 || nc > 3)) {
+        // < 2 || > 3 neighbors --> died
         this._board[i].isAlive = false;
         this.adjustNeighbors(i, -1);
-      } else {
-
+      } else if (!isAlive && nc === 3) {
+        // === 3 neighbors -> born
+        this._board[i].isAlive = true;
+        this.adjustNeighbors(i, 1);
       }
     }
   }
 
-  private set(x: number, y: number, value: boolean) {
+  private set(x: number, y: number, value: boolean): void {
     const index = this.index(x, y);
-    if (this.board[index].isAlive !== value) {
-      this.board[index].isAlive = value;
+    if (this._board[index].isAlive !== value) {
+      this._board[index].isAlive = value;
       this.adjustNeighbors(index, value ? 1 : -1);
     }
   }
@@ -96,14 +104,18 @@ export class ModelStore extends StoreBase {
     return x + this.x * y;
   }
 
+  public getBoard(): BoardType {
+    return this._board;
+  }
+
   accept(action: Action): void {
     log.debug("ModelStore accepting", action);
     switch (action.type) {
-      case "reinit":
-        this.init(10, 10);
+      case "clear":
+        this.init(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
         break;
       case "initRandom":
-        this.initRandom(10, 10);
+        this.initRandom(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
         break;
       case "next":
         this.calculateNextGeneration();
@@ -115,3 +127,5 @@ export class ModelStore extends StoreBase {
     this.notify(action.type);
   }
 }
+
+export default new ModelStore();

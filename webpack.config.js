@@ -49,8 +49,6 @@ module.exports = {
   externals: {
     // "react": "React",
     // "react-dom": "ReactDOM",
-    // "kendo-ui-core": "kendo-ui-core",
-    // "jquery": "$"
   },
 
   plugins: [new webpack.DefinePlugin({

@@ -1,11 +1,11 @@
 interface GeneralActionType {
   type: ActionType;
-  payload: any;
+  payload?: any;
 }
 
 type SetAction = {type: "set", payload: {x: number, y: number, value: boolean}};
 export type ActionType =
-    "reinit" /* reinit game of life board*/
+    "clear" /* reinit game of life board*/
         | "next" /* calculate and render next generation*/
         | "initRandom" /* init board with random life */
         | "set";

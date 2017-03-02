@@ -19,7 +19,7 @@ html, body {
 
 .editor-container {
     flex: auto;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .editor-header {
@@ -41,6 +41,29 @@ html, body {
 .editor-menu {
     flex: none;
     margin: 5px;
+}
+
+.board-border {
+    stroke-width: 1;
+    stroke: rgb(0, 0, 0);
+    fill: none;
+}
+
+.board-grid {
+    stroke-width: 1;
+    stroke: rgb(200, 200, 200);
+}
+
+.field-filled {
+    fill: rgb(0, 0, 255);
+    stroke-width: 0;
+    stroke: rgb(0, 0, 0);
+}
+
+.field-empty {
+    fill: rgb(255, 255, 255);
+    stroke-width: 0;
+    stroke: rgb(0, 0, 0);
 }
 
 #app-container {

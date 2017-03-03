@@ -12,7 +12,7 @@ export type ActionType =
         | "initRegular" /* init cell with regular pattern */
         | "set"
         | "size";
-/* set life on position x,y to value (true or false) */
+/* set life on position maxX,maxY to value (true or false) */
 
 
 export type Action = GeneralActionType | SetAction | SizeAction;

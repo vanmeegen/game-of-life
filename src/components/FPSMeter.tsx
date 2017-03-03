@@ -19,7 +19,7 @@ export class FPSMeter extends React.Component<LocalProps, any> {
     super(props);
   }
 
-  shouldComponentUpdate(nextProps: LocalProps): boolean {
+  shouldComponentUpdate(): boolean {
     // will be managed directly in DOM
     return false;
   }

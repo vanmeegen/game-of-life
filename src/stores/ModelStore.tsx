@@ -11,8 +11,8 @@ export type BoardEntryType = {isAlive: boolean, neighborCount: number, lastNeigh
 export class Board {
   @observable private _cells: BoardEntryType[];
   private NEIGHBOR_OFFSETS: number[];
-  @observable public x: number;
-  @observable public y: number;
+  @observable public maxX: number;
+  @observable public maxY: number;
 
   constructor() {
     this.init(1, 1);
@@ -34,7 +34,7 @@ export class Board {
   adjustNeighbors(index: number, delta: number): void {
     for (const d of this.NEIGHBOR_OFFSETS) {
       const neighborIndex = index + d;
-      if (neighborIndex >= 0 && neighborIndex < this.x * this.y) {
+      if (neighborIndex >= 0 && neighborIndex < this.maxX * this.maxY) {
         this._cells[neighborIndex].neighborCount += delta;
       }
     }
@@ -45,8 +45,8 @@ export class Board {
    */
   @action
   public initRandom(): void {
-    const x = this.x;
-    const y = this.y;
+    const x = this.maxX;
+    const y = this.maxY;
     this.init(x, y);
     for (let i = 0; i < x * y; i++) {
       this._cells[i].isAlive = Math.random() < 0.3;
@@ -63,8 +63,8 @@ export class Board {
    */
   @action
   public initRegular(): void {
-    const x = this.x;
-    const y = this.y;
+    const x = this.maxX;
+    const y = this.maxY;
     this.init(x, y);
     for (let i = 0; i < x * y; i++) {
       this._cells[i].isAlive = i % 3 === 0;
@@ -84,7 +84,7 @@ export class Board {
     // first save all neighborCounts in lastNeighborCount, then
     this._cells.forEach(x => x.lastNeighborCount = x.neighborCount);
 
-    for (let i = 0; i < this.x * this.y; i++) {
+    for (let i = 0; i < this.maxX * this.maxY; i++) {
       // if _cells has 2 or 3 neighbors, stay alive
       // if _cells has 3 neighbors, new born
 
@@ -107,9 +107,10 @@ export class Board {
   }
 
   @action init(x: number, y: number): void {
+    // switch order, otherwise trouble with out of index since cell changes will be triggered, but index does not fit
+    this.maxX = x;
+    this.maxY = y;
     this._cells = [];
-    this.x = x;
-    this.y = y;
     this.NEIGHBOR_OFFSETS = [-1, -x - 1, -x, -x + 1, 1, x - 1, x, x + 1];
     for (let i = 0; i < x * y; i++) {
       this._cells.push({isAlive: false, neighborCount: 0});
@@ -120,7 +121,7 @@ export class Board {
     return this._cells;
   }
   private index(x: number, y: number): number {
-    return x + this.x * y;
+    return x + this.maxX * y;
   }
 }
 
@@ -136,20 +137,8 @@ export class ModelStore extends StoreBase {
     this._board.init(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
   }
 
-  public get cells(): BoardEntryType[] {
-    return this._board.cells();
-  }
-
   public cell(x: number, y: number): BoardEntryType {
     return this._board.cell(x, y);
-  }
-
-  public get x(): number {
-    return this._board.x;
-  }
-
-  public get y(): number {
-    return this._board.y;
   }
 
   public get board(): Board {
@@ -157,10 +146,10 @@ export class ModelStore extends StoreBase {
   }
 
   accept(action: Action): void {
-    log.debug("ModelStore accepting", action);
+    log.info("ModelStore accepting", action);
     switch (action.type) {
       case "clear":
-        this._board.init(this._board.x, this._board.y);
+        this._board.init(this._board.maxX, this._board.maxY);
         break;
       case "initRandom":
         this._board.initRandom();

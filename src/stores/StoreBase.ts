@@ -13,10 +13,12 @@ abstract class StoreBase {
 
   abstract accept(action: Action): void;
 
+  //noinspection JSUnusedGlobalSymbols
   register(listener: StoreListener): void {
     this._listeners.add(listener);
   }
 
+  //noinspection JSUnusedGlobalSymbols
   deregister(listener: StoreListener): void {
     this._listeners.delete(listener);
   }

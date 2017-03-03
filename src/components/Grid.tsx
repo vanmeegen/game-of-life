@@ -1,6 +1,7 @@
 // lib imports
 import * as React from "react";
 import {observer} from "mobx-react";
+import log from "../Logger";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 
@@ -21,6 +22,7 @@ export class Grid extends React.Component<LocalProps, any> {
   }
 
   render(): JSX.Element {
+    log.debug("Rendering Grid");
     const svgElements: JSX.Element[] = [];
     // create vertical lines
     for (let x = 0; x < this.props.x; x++) {

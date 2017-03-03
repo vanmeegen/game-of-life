@@ -16,8 +16,6 @@ interface LocalProps {
 
 interface LocalState {
   board: Board; /** cell to display */
-  x: number; /* #columns */
-  y: number; /* # rows */
   cellSize: number; /** cell size to draw in pixel */
 }
 
@@ -41,7 +39,7 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.clear = this.clear.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
     this.stop = this.stop.bind(this);
-    this.state = {cellSize: 5, x: modelStore.x, y: modelStore.y, board: modelStore.board};
+    this.state = {cellSize: 5, board: modelStore.board};
   }
 
   componentDidMount(): void {
@@ -71,9 +69,9 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
             Run
           </button>
           <div className="btn btn-default btn-s">
-            <label htmlFor="boardColumns" className="slider-label">Columns: ({this.state.x})</label>
+            <label htmlFor="boardColumns" className="slider-label">Columns: ({this.state.board.maxX})</label>
 
-            <input type="range" min="10" max="500" value={this.state.x} name="boardColumns"
+            <input type="range" min="10" max="500" value={this.state.board.maxX} name="boardColumns"
                    title="number of board columns"
                    onChange={this.changeBoardSize}/>
           </div>
@@ -87,8 +85,8 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
       < div className="editor-container" ref="containerRef">
         <svg width="100%" height="100%" onMouseDown={this.onMouseDown} ref="svgRef">
           <g>
-            <Grid cellSize={this.state.cellSize} x={this.state.x} y={this.state.y}/>
-            <CellGrid cellSize={this.state.cellSize} x={this.state.x} y={this.state.y} board={this.state.board}/>
+            <Grid cellSize={this.state.cellSize} x={this.state.board.maxX} y={this.state.board.maxY}/>
+            <CellGrid cellSize={this.state.cellSize} board={this.state.board}/>
           </g>
         </svg>
       </div >
@@ -174,8 +172,8 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.log("mousedown", e);
     if (!this.stop()) {
       const {x, y}: Point = this.getBoardCoordinates(e);
-      if (x >= 0 && x < this.state.x && y >= 0 && y < this.state.y) {
-        const newValue = !this.state.board[x + this.state.x * y];
+      if (x >= 0 && x < this.state.board.maxX && y >= 0 && y < this.state.board.maxY) {
+        const newValue = !this.state.board[x + this.state.board.maxX * y];
         set(x, y, newValue);
       }
     }

@@ -3,10 +3,9 @@ import * as React from "react";
 import {CellRow} from "./cellrow";
 import {observer} from "mobx-react";
 import {Board} from "../stores/ModelStore";
+import log from "../Logger";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
-import shallowEqual = require("shallowequal");
-const deepEqual = require("deep-equal");
 
 /**
  * draw a grid
@@ -14,8 +13,6 @@ const deepEqual = require("deep-equal");
  */
 interface LocalProps {
   cellSize: number;
-  x: number;
-  y: number;
   board: Board;
 }
 
@@ -26,11 +23,13 @@ export class CellGrid extends React.Component<LocalProps, any> {
   }
 
   render(): JSX.Element {
+    log.debug("Rendering CellGrid");
     const svgElements: JSX.Element[] = [];
     // create field contents
-    for (let y = 0; y < this.props.y; y++) {
-      svgElements.push(<CellRow key={y} cellSize={this.props.cellSize} x={this.props.x} y={this.props.y} row={y}
-                                boardRow={this.props.board.cells().slice(this.props.x * y, this.props.x * (y + 1))}/>);
+    for (let y = 0; y < this.props.board.maxY; y++) {
+      svgElements.push(<CellRow key={y} cellSize={this.props.cellSize} maxX={this.props.board.maxX}
+                                maxY={this.props.board.maxY} y={y}
+                                boardRow={this.props.board.cells().slice(this.props.board.maxX * y, this.props.board.maxX * (y + 1))}/>);
     }
     return <g>
       {svgElements}

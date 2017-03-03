@@ -2,10 +2,10 @@
 import * as React from "react";
 import {observer} from "mobx-react";
 import {BoardEntryType} from "../stores/modelstore";
+import log from "../Logger";
+import {Cell} from "./cell";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
-import shallowEqual = require("shallowequal");
-const deepEqual = require("deep-equal");
 
 /**
  * draw a grid
@@ -13,9 +13,9 @@ const deepEqual = require("deep-equal");
  */
 interface LocalProps {
   cellSize: number;
-  x: number;
+  maxX: number;
+  maxY: number;
   y: number;
-  row: number;
   boardRow: BoardEntryType[];
 }
 
@@ -26,15 +26,12 @@ export class CellRow extends React.Component<LocalProps, any> {
   }
 
   render(): JSX.Element {
-    const svgElements: JSX.Element[] = [];
-    for (let x = 0; x < this.props.x; x++) {
-      svgElements.push(<rect key={x} x={x * this.props.cellSize + 1}
-                             y={this.props.row * this.props.cellSize + 1}
-                             width={this.props.cellSize - 2} height={this.props.cellSize - 2}
-                             className={this.props.boardRow[x].isAlive ? "field-filled" : "field-empty"}/>);
-    }
+    log.debug("Rendering CellRow " + this.props.y);
     return <g>
-      {svgElements}
+      { this.props.boardRow.map((entry, x) =>
+          <Cell key={x + this.props.maxX * this.props.y} x={x} y={this.props.y} cellSize={this.props.cellSize}
+                boardEntry={entry}/>)
+      }
     </g>;
   }
 }

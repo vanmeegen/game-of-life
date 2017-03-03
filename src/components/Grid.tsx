@@ -1,5 +1,6 @@
 // lib imports
 import * as React from "react";
+import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 
@@ -13,13 +14,10 @@ interface LocalProps {
   y: number;
 }
 
+@observer
 export class Grid extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps: LocalProps): boolean {
-    return nextProps.x !== this.props.x || nextProps.y !== this.props.y || nextProps.cellSize !== this.props.cellSize;
   }
 
   render(): JSX.Element {

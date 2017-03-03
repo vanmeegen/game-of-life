@@ -1,26 +1,28 @@
 import "./app.css";
 import * as React from "react";
 import log from "../Logger";
-import modelStore from "../stores/ModelStore";
+import modelStore, {Board} from "../stores/ModelStore";
 import {HeaderBarComponent} from "./HeaderBarComponent";
 import {initRandom, initRegular, next, clear, set, size} from "../actions/ActionCreator";
 import {Point} from "../util/Geometry";
 import {Configuration} from "../common/Configuration";
 import {Grid} from "./grid";
 import {CellGrid} from "./CellGrid";
+import {observer} from "mobx-react";
 
 interface LocalProps {
 
 }
 
 interface LocalState {
-  board: boolean[]; /** cell to display */
+  board: Board; /** cell to display */
   x: number; /* #columns */
   y: number; /* # rows */
   cellSize: number; /** cell size to draw in pixel */
 }
 
 // App component
+@observer
 export class GameOfLifeContainer extends React.Component<LocalProps, LocalState> {
   /** padding around svg diagram to enabe moving elements outside of original bounds of container */
   private static PADDING_WIDTH: number = 10;
@@ -37,15 +39,9 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.changeBoardSize = this.changeBoardSize.bind(this);
     this.changeCellSize = this.changeCellSize.bind(this);
     this.clear = this.clear.bind(this);
-    this.storeChanged = this.storeChanged.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
     this.stop = this.stop.bind(this);
-    this.state = {board: [], x: 1, y: 1, cellSize: 5};
-  }
-
-  componentWillMount(): void {
-    modelStore.register(this.storeChanged);
-    this.storeChanged();
+    this.state = {cellSize: 5, x: modelStore.x, y: modelStore.y, board: modelStore.board};
   }
 
   componentDidMount(): void {
@@ -56,13 +52,6 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.updateDimensions();
   }
 
-  componentWillUnmount(): void {
-    modelStore.deregister(this.storeChanged);
-  }
-
-  storeChanged(): void {
-    this.setState({cellSize: this.state.cellSize, x: modelStore.x, y: modelStore.y, board: modelStore.cells});
-  }
 
   render(): JSX.Element {
     log.debug("Rendering Game of Life");

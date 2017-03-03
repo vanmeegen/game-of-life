@@ -1,6 +1,7 @@
 import {Action} from "../actions/Action";
 import StoreBase from "./StoreBase";
 import log from "../Logger";
+import {observable, action} from "mobx";
 
 export type BoardEntryType = {isAlive: boolean, neighborCount: number, lastNeighborCount?: number};
 
@@ -8,16 +9,16 @@ export type BoardEntryType = {isAlive: boolean, neighborCount: number, lastNeigh
  * models a Game of Life Board with current neighbor count
  */
 export class Board {
-  private _cells: BoardEntryType[];
+  @observable private _cells: BoardEntryType[];
   private NEIGHBOR_OFFSETS: number[];
-  public x: number;
-  public y: number;
+  @observable public x: number;
+  @observable public y: number;
 
   constructor() {
     this.init(1, 1);
   }
 
-  set(x: number, y: number, value: boolean): void {
+  @action set(x: number, y: number, value: boolean): void {
     const index = this.index(x, y);
     if (this._cells[index].isAlive !== value) {
       this._cells[index].isAlive = value;
@@ -42,6 +43,7 @@ export class Board {
   /**
    * initializes cell with randomly set life
    */
+  @action
   public initRandom(): void {
     const x = this.x;
     const y = this.y;
@@ -59,6 +61,7 @@ export class Board {
   /**
    * initializes cell with regular pattern for better reproducability
    */
+  @action
   public initRegular(): void {
     const x = this.x;
     const y = this.y;
@@ -76,6 +79,7 @@ export class Board {
   /**
    * calculate next life generation in cell
    */
+  @action
   public calculateNextGeneration(): void {
     // first save all neighborCounts in lastNeighborCount, then
     this._cells.forEach(x => x.lastNeighborCount = x.neighborCount);
@@ -102,7 +106,7 @@ export class Board {
     return this._cells[this.index(x, y)];
   }
 
-  init(x: number, y: number): void {
+  @action init(x: number, y: number): void {
     this._cells = [];
     this.x = x;
     this.y = y;
@@ -112,8 +116,8 @@ export class Board {
     }
   }
 
-  public cells(): boolean[] {
-    return this._cells.map((c: BoardEntryType) => c.isAlive);
+  public cells(): BoardEntryType[] {
+    return this._cells;
   }
   private index(x: number, y: number): number {
     return x + this.x * y;
@@ -132,7 +136,7 @@ export class ModelStore extends StoreBase {
     this._board.init(ModelStore.DEFAULT_SIZE, ModelStore.DEFAULT_SIZE);
   }
 
-  public get cells(): boolean[] {
+  public get cells(): BoardEntryType[] {
     return this._board.cells();
   }
 
@@ -146,6 +150,10 @@ export class ModelStore extends StoreBase {
 
   public get y(): number {
     return this._board.y;
+  }
+
+  public get board(): Board {
+    return this._board;
   }
 
   accept(action: Action): void {

@@ -1,5 +1,7 @@
 // lib imports
 import * as React from "react";
+import {observer} from "mobx-react";
+import {BoardEntryType} from "../stores/modelstore";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 import shallowEqual = require("shallowequal");
@@ -14,16 +16,13 @@ interface LocalProps {
   x: number;
   y: number;
   row: number;
-  boardRow: boolean[];
+  boardRow: BoardEntryType[];
 }
 
+@observer
 export class CellRow extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps: LocalProps): boolean {
-    return nextProps.x !== this.props.x || nextProps.y !== this.props.y || nextProps.cellSize !== this.props.cellSize || nextProps.row !== this.props.row || !deepEqual(nextProps.boardRow, this.props.boardRow);
   }
 
   render(): JSX.Element {
@@ -32,7 +31,7 @@ export class CellRow extends React.Component<LocalProps, any> {
       svgElements.push(<rect key={x} x={x * this.props.cellSize + 1}
                              y={this.props.row * this.props.cellSize + 1}
                              width={this.props.cellSize - 2} height={this.props.cellSize - 2}
-                             className={this.props.boardRow[x] ? "field-filled" : "field-empty"}/>);
+                             className={this.props.boardRow[x].isAlive ? "field-filled" : "field-empty"}/>);
     }
     return <g>
       {svgElements}

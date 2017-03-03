@@ -1,6 +1,7 @@
 // lib imports
 import * as React from "react";
 import {FPSMeter} from "./FPSMeter";
+import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 
@@ -16,13 +17,10 @@ interface LocalProps {
 
 }
 
+@observer
 export class HeaderBarComponent extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
-  }
-
-  shouldComponentUpdate(nextProps: LocalProps): boolean {
-    return nextProps.children !== this.props.children;
   }
 
   render(): JSX.Element {

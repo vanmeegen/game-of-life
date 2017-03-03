@@ -1,24 +1,27 @@
 import "./app.css";
 import * as React from "react";
 import log from "../Logger";
-import modelStore, {BoardType} from "../stores/ModelStore";
+import modelStore from "../stores/ModelStore";
 import {HeaderBarComponent} from "./HeaderBarComponent";
-import {initRandom, next, clear, set, size} from "../actions/ActionCreator";
+import {initRandom, initRegular, next, clear, set, size} from "../actions/ActionCreator";
 import {Point} from "../util/Geometry";
 import {Configuration} from "../common/Configuration";
+import {Grid} from "./grid";
+import {CellGrid} from "./CellGrid";
 
 interface LocalProps {
 
 }
 
 interface LocalState {
-  board: BoardType; /** board to display */
-  size: number; /** size of board */
+  board: boolean[]; /** cell to display */
+  x: number; /* #columns */
+  y: number; /* # rows */
   cellSize: number; /** cell size to draw in pixel */
 }
 
 // App component
-export class GameOfLifeContainer extends React.Component<any, LocalState> {
+export class GameOfLifeContainer extends React.Component<LocalProps, LocalState> {
   /** padding around svg diagram to enabe moving elements outside of original bounds of container */
   private static PADDING_WIDTH: number = 10;
 
@@ -37,7 +40,7 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
     this.storeChanged = this.storeChanged.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
     this.stop = this.stop.bind(this);
-    this.state = {board: [], size: 0, cellSize: 5};
+    this.state = {board: [], x: 1, y: 1, cellSize: 5};
   }
 
   componentWillMount(): void {
@@ -58,36 +61,11 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
   }
 
   storeChanged(): void {
-    if (modelStore.dimensions.x !== this.state.size) {
-      this.setState({...this.state, size: modelStore.dimensions.x});
-    } else {
-      this.forceUpdate();
-    }
+    this.setState({cellSize: this.state.cellSize, x: modelStore.x, y: modelStore.y, board: modelStore.cells});
   }
 
   render(): JSX.Element {
     log.debug("Rendering Game of Life");
-    const svgElements: JSX.Element[] = [];
-    // create field contents
-    const maxX = this.state.size;
-    for (let x = 0; x < maxX; x++) {
-      for (let y = 0; y < modelStore.dimensions.y; y++) {
-        svgElements.push(<rect key={x + y * maxX} x={x * this.state.cellSize + 1} y={y * this.state.cellSize + 1}
-                               width={this.state.cellSize - 2} height={this.state.cellSize - 2}
-                               className={modelStore.board(x, y).isAlive ? "field-filled" : "field-empty"}/>);
-      }
-    }
-    // create vertical lines
-    for (let x = 0; x < maxX; x++) {
-      svgElements.push(<line key={"vert" + x} x1={x * this.state.cellSize} y1={0} x2={x * this.state.cellSize}
-                             y2={modelStore.dimensions.y * this.state.cellSize} className="board-grid"/>);
-    }
-    // create horizontal lines
-    for (let y = 0; y < modelStore.dimensions.y; y++) {
-      svgElements.push(<line key={"hor" + y} x1={0} y1={y * this.state.cellSize} x2={maxX * this.state.cellSize}
-                             y2={y * this.state.cellSize} className="board-grid"/>);
-    }
-
     // layout with fixed header from here: http://stackoverflow.com/questions/36515103/scrollable-div-content-area-with-fixed-header
     return <div
         className="editor">
@@ -96,6 +74,7 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
                             tooltip={`Version: ${Configuration.version()} commit: ${Configuration.revision()} build time: ${Configuration.BUILD_TIME}`}>
           <button type="button" className="btn btn-default btn-s" onClick={this.clear}>Clear</button>
           <button type="button" className="btn btn-default btn-s" onClick={this.initRandom}>Random</button>
+          <button type="button" className="btn btn-default btn-s" onClick={this.initRegular}>Regular</button>
           <button type="button" className="btn btn-default btn-s" onClick={this.nextGeneration}>
             Next Gen
           </button>
@@ -103,9 +82,9 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
             Run
           </button>
           <div className="btn btn-default btn-s">
-            <label htmlFor="boardColumns" className="slider-label">Columns: ({this.state.size})</label>
+            <label htmlFor="boardColumns" className="slider-label">Columns: ({this.state.x})</label>
 
-            <input type="range" min="10" max="500" value={this.state.size} name="boardColumns"
+            <input type="range" min="10" max="500" value={this.state.x} name="boardColumns"
                    title="number of board columns"
                    onChange={this.changeBoardSize}/>
           </div>
@@ -119,10 +98,8 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
       < div className="editor-container" ref="containerRef">
         <svg width="100%" height="100%" onMouseDown={this.onMouseDown} ref="svgRef">
           <g>
-            {svgElements}
-            <rect x="0" y="0" width={maxX * this.state.cellSize - 1}
-                  height={modelStore.dimensions.y * this.state.cellSize - 1}
-                  className="board-border"/>
+            <Grid cellSize={this.state.cellSize} x={this.state.x} y={this.state.y}/>
+            <CellGrid cellSize={this.state.cellSize} x={this.state.x} y={this.state.y} board={this.state.board}/>
           </g>
         </svg>
       </div >
@@ -133,6 +110,9 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
     initRandom();
   }
 
+  initRegular(): void {
+    initRegular();
+  }
   nextGeneration(): void {
     next();
   }
@@ -205,8 +185,8 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
     this.log("mousedown", e);
     if (!this.stop()) {
       const {x, y}: Point = this.getBoardCoordinates(e);
-      if (x >= 0 && x < this.state.size && y >= 0 && y < modelStore.dimensions.y) {
-        const newValue = !modelStore.board(x, y).isAlive;
+      if (x >= 0 && x < this.state.x && y >= 0 && y < this.state.y) {
+        const newValue = !this.state.board[x + this.state.x * y];
         set(x, y, newValue);
       }
     }

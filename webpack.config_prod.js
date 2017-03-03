@@ -3,12 +3,14 @@ const webpack = require("webpack");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.config');
 
-//noinspection JSDeprecatedSymbols
 const prodConfig = Object.assign({}, common, {
       plugins: [
         new webpack.NoErrorsPlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.DefinePlugin({
+          'process.env': {
+            'NODE_ENV': JSON.stringify('production')
+          },
           // the api server url could be something like http://myserver:8080
           // however, we use blank in order to server all api requests from the same server as the html/css/js - files
           // this works both for development (with the devserver proxy) and in production

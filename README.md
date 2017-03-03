@@ -9,8 +9,7 @@ Goals
 Optimization Steps
 ------------------
 - Dumb React: shouldComponentUpdate not used, everything is always rerendered
-- Standard React: shouldComponentUpdate with shallowEqual, 
-- Optimized Lists: break down big lists to speed up partial updates
+- Standard React: shouldComponentUpdate with standard equal as needed, 
 - MobX: use MobX to do efficient Updates
 - Immutable: use an immutable model for calculation
 
@@ -23,11 +22,12 @@ System: Intel Core i5-3317U 1.7GHz running Windows 10
 Started with Random seed, wait for fps shown after 1 minute.
 
 Variant | Size | FPS | Browser 
---|--:|--:
-Dumb React | 150/5px | 1.3 | Chrome 56.0.2924.87 (64-bit)
-Dumb React | 150/5px | 0.7 | Firefox 51.0.1 (64-Bit)
-Dumb React | 150/5px | 0.4 | IE 11 1.576.14393.0 Update 11.0.38
-Dumb React | 150/5px | 0.3 | Edge 38.14393.0.0
+-- | --: | --:
+Dumb React      | 150/5px | 0.3 | Edge 38.14393.0.0
+Dumb React      | 150/5px | 0.4 | IE 11 1.576.14393.0 Update 11.0.38
+Dumb React      | 150/5px | 0.7 | Firefox 51.0.1 (64-Bit)
+Dumb React      | 150/5px | 1.3 | Chrome 56.0.2924.87 (64-bit)
+Standard React  | 150/5px | 2.8 | Chrome 56.0.2924.87 (64-bit)
 
 
 Running

@@ -5,6 +5,10 @@ export function initRandom(): void {
   Dispatcher.dispatch({type: "initRandom"});
 }
 
+export function initRegular(): void {
+  Dispatcher.dispatch({type: "initRegular"});
+}
+
 export function next(): void {
   Dispatcher.dispatch({type: "next"});
 }

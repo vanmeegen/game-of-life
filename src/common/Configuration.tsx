@@ -5,9 +5,6 @@ export let __GIT_COMMIT__;
 export let __BUILD_NUMBER__;
 export let __BUILD_TIME__;
 export let __VERSION__;
-export let __NODE_ENV__;
-
-// electron version: is delivered with __API_SERVER_URL__ set to localhost
 
 export class Configuration {
   static readonly GIT_COMMIT: string = typeof __GIT_COMMIT__ === "undefined" ? "unknown" : __GIT_COMMIT__;
@@ -24,7 +21,7 @@ export class Configuration {
   }
 
   static isDevelopment(): boolean {
-    return __NODE_ENV__ !== "production";
+    return process.env.NODE_ENV !== "production";
   }
 
 }

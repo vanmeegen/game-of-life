@@ -6,9 +6,10 @@ interface GeneralActionType {
 type SetAction = {type: "set", payload: {x: number, y: number, value: boolean}};
 type SizeAction = {type: "size", payload: number};
 export type ActionType =
-    "clear" /* reinit game of life board*/
+    "clear" /* reinit game of life cell*/
         | "next" /* calculate and render next generation*/
-        | "initRandom" /* init board with random life */
+        | "initRandom" /* init cell with random life */
+        | "initRegular" /* init cell with regular pattern */
         | "set"
         | "size";
 /* set life on position x,y to value (true or false) */

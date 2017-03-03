@@ -37,7 +37,7 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
     this.storeChanged = this.storeChanged.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
     this.stop = this.stop.bind(this);
-    this.state = {board: [], size: 0, cellSize: 10};
+    this.state = {board: [], size: 0, cellSize: 5};
   }
 
   componentWillMount(): void {

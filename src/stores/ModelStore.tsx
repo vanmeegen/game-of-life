@@ -10,7 +10,7 @@ export class ModelStore extends StoreBase {
   private y: number;
   private _board: BoardType;
   private NEIGHBOR_OFFSETS: number[];
-  private static DEFAULT_SIZE: number = 50;
+  private static DEFAULT_SIZE: number = 150;
 
 
   constructor() {

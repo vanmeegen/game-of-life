@@ -92,7 +92,7 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
     return <div
         className="editor">
       <div className="editor-header" onKeyPress={this.stop}>
-        <HeaderBarComponent title="Game of Life"
+        <HeaderBarComponent title="Game of Life" fpsId="fps"
                             tooltip={`Version: ${Configuration.version()} commit: ${Configuration.revision()} build time: ${Configuration.BUILD_TIME}`}>
           <button type="button" className="btn btn-default btn-s" onClick={this.clear}>Clear</button>
           <button type="button" className="btn btn-default btn-s" onClick={this.initRandom}>Random</button>
@@ -144,13 +144,27 @@ export class GameOfLifeContainer extends React.Component<any, LocalState> {
   startInfinite(): void {
     this.infinite = true;
     requestAnimationFrame(this.autoGeneration);
+    // update fps every second
+    const fpsOut = document.getElementById("fps");
+    setInterval(() => fpsOut.innerHTML = (1000 / this.totalFrameTime).toFixed(1) + " fps", 1000);
   }
+
+  // The higher this value, the less the fps will reflect temporary variations
+// A value of 1 will only keep the last value
+  private filterStrength: number = 20;
+  private totalFrameTime: number = 0;
+  private lastGenerationTime: Date = new Date;
 
   autoGeneration(): void {
     if (this.infinite) {
+      const thisGenerationTime = new Date;
       next();
-      requestAnimationFrame(this.autoGeneration);
+
+      const thisFrameTime: number = (thisGenerationTime.getTime() - this.lastGenerationTime.getTime());
+      this.totalFrameTime += (thisFrameTime - this.totalFrameTime) / this.filterStrength;
+      this.lastGenerationTime = thisGenerationTime;
     }
+    requestAnimationFrame(this.autoGeneration);
   }
 
   private changeBoardSize(evt: any): void {

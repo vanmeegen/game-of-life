@@ -1,5 +1,6 @@
 // lib imports
 import * as React from "react";
+import {FPSMeter} from "./FPSMeter";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 
@@ -9,6 +10,7 @@ import ReactNode = React.ReactNode;
  */
 interface LocalProps {
   title: string;
+  fpsId: string;
   tooltip?: string;
   children?: ReactNode;
 
@@ -27,7 +29,9 @@ export class HeaderBarComponent extends React.Component<LocalProps, any> {
     return      <div className="editor-bar" title={this.props.tooltip || "unknown"}>
       <div>
         <h3 className="editor-title">{this.props.title}</h3>
-        <a href="http://www.mvmsoft.de" style={{display: "block", marginLeft: "5px"}}>Author: Marco van Meegen</a>
+        <a href="http://www.mvmsoft.de"
+           style={{display: "inline-block", marginLeft: "5px"}}>Author: Marco van Meegen</a>
+        <FPSMeter id={this.props.fpsId}/>
       </div>
       <div className="editor-menu btn-group" role="group">
         {this.props.children}

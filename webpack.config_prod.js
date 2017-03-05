@@ -5,7 +5,7 @@ const common = require('./webpack.config');
 
 const prodConfig = Object.assign({}, common, {
       plugins: [
-        new webpack.NoEmitOnErrorsPlugin(),
+        new webpack.NoErrorsPlugin(),
         new webpack.optimize.OccurenceOrderPlugin(),
         new webpack.DefinePlugin({
           'process.env': {

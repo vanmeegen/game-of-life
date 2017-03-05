@@ -5,7 +5,7 @@ import {stimo, stimo_get, stimo_set} from "stimo";
 import {List} from "immutable";
 import {Point} from "../util/Geometry";
 
-
+// split array into rows to make it faster
 function getLifeCell(cells: List<List<boolean>>, x: number, y: number): boolean {
   return cells.get(y).get(x);
 }
@@ -14,12 +14,15 @@ function setLifeCell(cells: List<List<boolean>>, x: number, y: number, newConten
   return cells.set(y, cells.get(y).set(x, newContent));
 }
 
+
+// immutability not needed here, thus define outside immutable object
 const NEIGHBOR_OFFSETS: Point[] = [new Point(-1, -1), new Point(-1, 0), new Point(-1, 1), new Point(0, -1), new Point(0, 1), new Point(1, -1), new Point(1, 0), new Point(1, 1)];
 // not immutable
 let neighbors: number[];
 
 /**
  * models a Game of Life Board with current neighbor count
+ * @author Marco van Meegen
  */
 @stimo
 export class Board {
@@ -56,15 +59,13 @@ export class Board {
   }
 
   set(x: number, y: number, value: boolean): Board {
-    const newCells = this.cells.withMutations((cells: List<List<boolean>>) => {
-      const alive = getLifeCell(cells, x, y);
+    const alive = getLifeCell(this.cells, x, y);
+    let result: Board = this;
       if (alive !== value) {
-        cells = setLifeCell(cells, x, y, value);
+        result = this.setCells(setLifeCell(this.cells, x, y, value));
         this.adjustNeighbors(x, y, value ? 1 : -1);
       }
-      return cells;
-    });
-    return this.setCells(newCells);
+    return result;
   }
 
   /**
@@ -87,34 +88,30 @@ export class Board {
    * initializes cell with randomly set life
    */
   public initRandom(): Board {
-    return this.init(cell => Math.random() < 0.3);
+    return this.init(() => Math.random() < 0.3);
   }
 
   /**
    * initializes cell with regular pattern for better reproducability
    */
   public initRegular(): Board {
-    return this.init((cell, x, y) => (x + this.maxX * y) % 3 === 0);
+    return this.init((x, y) => (x + this.maxX * y) % 3 === 0);
   }
 
   initEmpty(): Board {
-    return this.init(cell => false);
+    return this.init(() => false);
   }
 
-  private init(callback: (cell: boolean, x?: number, y?: number) => boolean): Board {
+  private init(callback: (x?: number, y?: number) => boolean): Board {
+    neighbors.fill(0);
     let cells = this.cells.withMutations((cells: List<List<boolean>>) => {
       for (let y = 0; y < this.maxX; y++) {
         for (let x = 0; x < this.maxX; x++) {
-          const cell = getLifeCell(cells, x, y);
-          cells = setLifeCell(cells, x, y, callback(cell, x, y));
-        }
-      }
-      for (let y = 0; y < this.maxX; y++) {
-        for (let x = 0; x < this.maxX; x++) {
-          const alive = getLifeCell(cells, x, y);
-          if (alive) {
+          const newLife = callback(x, y);
+          if (newLife) {
             this.adjustNeighbors(x, y, 1);
           }
+          cells = setLifeCell(cells, x, y, newLife);
         }
       }
     });

@@ -48,6 +48,22 @@ describe("the model store", () => {
   );
 
   describe("it calculates game of life rules correctly", () => {
+    it("calculates an empty board from an empty board", () => {
+      modelStore.accept({type: "next"});
+      let countAlive: number = 0;
+      let countNeighbors: number = 0;
+      for (let x = 0; x < modelStore.board.maxX; x++) {
+        for (let y = 0; y < modelStore.board.maxY; y++) {
+          const cell = modelStore.cell(x, y);
+          if (cell.alive) {
+            countAlive++;
+          }
+          countNeighbors += cell.neighborCount;
+        }
+      }
+      expect(countAlive).to.equal(0);
+      expect(countNeighbors).to.equal(0);
+    });
     it("deletes a field with 1 neighbor", () => {
           modelStore.accept({type: "set", payload: {x: 0, y: 0, value: true}});
       modelStore.accept({type: "set", payload: {x: 1, y: 0, value: true}});

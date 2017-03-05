@@ -1,6 +1,5 @@
 // lib imports
 import * as React from "react";
-import {LifeCell} from "../stores/modelstore";
 import log from "../Logger";
 import {Cell} from "./cell";
 import {List} from "immutable";
@@ -17,7 +16,7 @@ interface LocalProps {
   maxX: number;
   maxY: number;
   y: number;
-  boardRow: List<LifeCell>;
+  boardRow: List<boolean>;
 }
 
 export class CellRow extends React.Component<LocalProps, any> {
@@ -34,7 +33,7 @@ export class CellRow extends React.Component<LocalProps, any> {
     return <g>
       { this.props.boardRow.map((entry, x) =>
           <Cell key={x + this.props.maxX * this.props.y} x={x} y={this.props.y} cellSize={this.props.cellSize}
-                alive={entry.alive}/>)
+                alive={entry}/>)
       }
     </g>;
   }

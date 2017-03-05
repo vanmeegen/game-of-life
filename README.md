@@ -40,11 +40,11 @@ and pitfalls with notification order and the like. If anyone has optimization hi
 
 Variant | Size | FPS | Browser 
 -- | --: | --:
-Standard React  | 150/5px | 5.7 | Chrome 56.0.2924.87 (64-bit)
-Standard React  | 150/5px | 4.3 | Firefox 51.0.1 (64-Bit)
-Standard React      | 150/5px | 1.9 | Edge 38.14393.0.0
-Mobx React  | 150/5px | 18.4 | Chrome 56.0.2924.87 (64-bit)
-
+Standard React  | 150/5px | 5.7  | Chrome 56.0.2924.87 (64-bit)
+Standard React  | 150/5px | 4.3  | Firefox 51.0.1 (64-Bit)
+Standard React  | 150/5px | 1.9  | Edge 38.14393.0.0
+Mobx React      | 150/5px | 18.4 | Chrome 56.0.2924.87 (64-bit)
+Immutable React | 150/5px | 4.7  | Chrome 56.0.2924.87 (64-bit)
 
 
 Running

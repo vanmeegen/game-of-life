@@ -1,9 +1,9 @@
 // lib imports
 import * as React from "react";
-import {observer} from "mobx-react";
 import log from "../Logger";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
+const shallowequal = require("shallowequal");
 
 /**
  * draw a grid
@@ -15,10 +15,13 @@ interface LocalProps {
   y: number;
 }
 
-@observer
 export class Grid extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
+  }
+
+  shouldComponentUpdate(nextProps: LocalProps): boolean {
+    return !shallowequal(nextProps, this.props);
   }
 
   render(): JSX.Element {

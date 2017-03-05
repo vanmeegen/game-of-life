@@ -1,11 +1,12 @@
 // lib imports
 import * as React from "react";
-import {observer} from "mobx-react";
-import {BoardEntryType} from "../stores/modelstore";
+import {LifeCell} from "../stores/modelstore";
 import log from "../Logger";
 import {Cell} from "./cell";
+import {Iterable} from "immutable";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
+const shallowequal = require("shallowequal");
 
 /**
  * draw a grid
@@ -16,13 +17,16 @@ interface LocalProps {
   maxX: number;
   maxY: number;
   y: number;
-  boardRow: BoardEntryType[];
+  boardRow: Iterable<number, LifeCell>;
 }
 
-@observer
 export class CellRow extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
+  }
+
+  shouldComponentUpdate(nextProps: LocalProps): boolean {
+    return !shallowequal(nextProps, this.props);
   }
 
   render(): JSX.Element {

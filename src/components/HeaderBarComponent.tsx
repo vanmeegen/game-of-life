@@ -1,10 +1,10 @@
 // lib imports
 import * as React from "react";
 import {FPSMeter} from "./FPSMeter";
-import {observer} from "mobx-react";
+
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
-
+const shallowequal = require("shallowequal");
 /**
  * create an editor title and a menu bar, menu entries are addes as children
  * @author Marco van Meegen
@@ -17,10 +17,13 @@ interface LocalProps {
 
 }
 
-@observer
 export class HeaderBarComponent extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
+  }
+
+  shouldComponentUpdate(nextProps: LocalProps): boolean {
+    return !shallowequal(nextProps, this.props);
   }
 
   render(): JSX.Element {

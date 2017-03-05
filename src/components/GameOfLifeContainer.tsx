@@ -8,7 +8,7 @@ import {Point} from "../util/Geometry";
 import {Configuration} from "../common/Configuration";
 import {Grid} from "./grid";
 import {CellGrid} from "./CellGrid";
-const shallowequal = require("shallowequal");
+import {observer} from "mobx-react";
 
 interface LocalProps {
 
@@ -21,6 +21,7 @@ interface LocalState {
 
 // App component
 
+@observer
 export class GameOfLifeContainer extends React.Component<LocalProps, LocalState> {
   /** padding around svg diagram to enabe moving elements outside of original bounds of container */
   private static PADDING_WIDTH: number = 10;
@@ -37,19 +38,9 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.changeBoardSize = this.changeBoardSize.bind(this);
     this.changeCellSize = this.changeCellSize.bind(this);
     this.clear = this.clear.bind(this);
-    this.storeChanged = this.storeChanged.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
     this.stop = this.stop.bind(this);
     this.state = {cellSize: 5, board: modelStore.board};
-  }
-
-  shouldComponentUpdate(nextProps: LocalProps, nextState: LocalState): boolean {
-    return !shallowequal(nextProps, this.props) || !shallowequal(nextState, this.state);
-  }
-
-  componentWillMount(): void {
-    modelStore.register(this.storeChanged);
-    this.storeChanged();
   }
 
   componentDidMount(): void {
@@ -58,14 +49,6 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
 
   componentDidUpdate(): void {
     this.updateDimensions();
-  }
-
-  componentWillUnmount(): void {
-    modelStore.deregister(this.storeChanged);
-  }
-
-  storeChanged(): void {
-    this.setState({cellSize: this.state.cellSize, board: modelStore.board});
   }
 
   render(): JSX.Element {

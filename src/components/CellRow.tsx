@@ -2,7 +2,7 @@
 import * as React from "react";
 import log from "../Logger";
 import {Cell} from "./cell";
-import {List} from "immutable";
+import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 const shallowequal = require("shallowequal");
@@ -16,9 +16,10 @@ interface LocalProps {
   maxX: number;
   maxY: number;
   y: number;
-  boardRow: List<boolean>;
+  boardRow: Array<boolean>;
 }
 
+@observer
 export class CellRow extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);

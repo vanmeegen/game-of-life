@@ -1,6 +1,7 @@
 // lib imports
 import * as React from "react";
 import log from "../Logger";
+import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 const shallowequal = require("shallowequal");
@@ -15,6 +16,7 @@ interface LocalProps {
   y: number;
 }
 
+@observer
 export class Grid extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);

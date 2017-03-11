@@ -1,10 +1,24 @@
-Game of Life Performance Measurement with React.js and MobX
-===========================================================
+Game of Life Performance Comparison with React.js, Vue.js and MobX
+==================================================================
 
 Goals
 -----
 
 - measure react performance with different approaches to component updates using the Game of Life Game
+- give can example complex enough to use different store approaches with React and Typescript and see detail solutions
+  like using dom references
+
+For me it was an interesting study in differences between React and Vue.js.
+Writing complex systems in javascript raises the need for easy-to-use but powerful frameworks like React.js, Vue.js, Angular.js.
+To enable better API documentation, easy refactoring and IDE code completion,
+all examples were written using Typescript, trying to use the current de facto standard of integrating Typescript.
+
+Disclaimer
+----------
+
+I'm not a specialist in all of the technologies used, thus there is a good chance I missed some obvious optimizations.
+Suggestions for improvement en detail are welcome; important is still that the general flux architecture should be kept
+to allow for maintainable, scalable applications.
 
 Optimization Steps
 ------------------
@@ -13,6 +27,7 @@ Optimization Steps
 - MobX: use MobX to do efficient Updates
 - Immutable: use an immutable model for calculation
 
+I did a port to Vue.js in [this repository](https://github.com/vanmeegen/game-of-life-vue), benchmark results are included here.
 
 
 Results
@@ -38,12 +53,18 @@ finally to a stable state with few mutations, MobX is by far faster than Standar
 Implementing with MobX was not as straight forward as it seemed, because there were rendering bugs
 and pitfalls with notification order and the like. If anyone has optimization hints, I'll be glad you let me know.
 
+Vue.js 2.2 was extremely slow, so I cancelled measurement of 150x150 and instead did a measurement with 75.
+
+
 Variant | Size | FPS | Browser 
 -- | --: | --:
 Standard React  | 150/5px | 5.7 | Chrome 56.0.2924.87 (64-bit)
 Standard React  | 150/5px | 4.3 | Firefox 51.0.1 (64-Bit)
 Standard React      | 150/5px | 1.9 | Edge 38.14393.0.0
 Mobx React  | 150/5px | 18.4 | Chrome 56.0.2924.87 (64-bit)
+
+
+Vue.js      | 75/5px  | 5.5  | Chrome 56.0.2924.87 (64-bit)
 
 
 

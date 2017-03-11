@@ -173,7 +173,7 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     if (!this.stop()) {
       const {x, y}: Point = this.getBoardCoordinates(e);
       if (x >= 0 && x < this.state.board.maxX && y >= 0 && y < this.state.board.maxY) {
-        const newValue = !this.state.board[x + this.state.board.maxX * y];
+        const newValue = !this.state.board.cell(x, y);
         set(x, y, newValue);
       }
     }

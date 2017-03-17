@@ -25,7 +25,7 @@ export class CellRow extends React.Component<LocalProps, any> {
   }
 
   render(): JSX.Element {
-    log.trace("Rendering CellRow " + this.props.y);
+    log.debug("Rendering CellRow " + this.props.y);
     return <g>
       { this.props.boardRow.map((entry, x) =>
           <Cell key={x + this.props.maxX * this.props.y} x={x} y={this.props.y} cellSize={this.props.cellSize}

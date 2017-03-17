@@ -3,7 +3,7 @@ import * as React from "react";
 import log from "../Logger";
 import modelStore, {Board} from "../stores/ModelStore";
 import {HeaderBarComponent} from "./HeaderBarComponent";
-import {initRandom, initRegular, next, clear, set, size} from "../actions/ActionCreator";
+import {initRandom, initRegular, next, clear, set, size, initPentomino} from "../actions/ActionCreator";
 import {Point} from "../util/Geometry";
 import {Configuration} from "../common/Configuration";
 import {Grid} from "./grid";
@@ -20,6 +20,7 @@ interface LocalState {
 }
 
 // App component
+
 @observer
 export class GameOfLifeContainer extends React.Component<LocalProps, LocalState> {
   /** padding around svg diagram to enabe moving elements outside of original bounds of container */
@@ -31,12 +32,9 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
   constructor(props: LocalProps) {
     super(props);
     this.onMouseDown = this.onMouseDown.bind(this);
-    this.initRandom = this.initRandom.bind(this);
-    this.nextGeneration = this.nextGeneration.bind(this);
     this.startInfinite = this.startInfinite.bind(this);
     this.changeBoardSize = this.changeBoardSize.bind(this);
     this.changeCellSize = this.changeCellSize.bind(this);
-    this.clear = this.clear.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
     this.stop = this.stop.bind(this);
     this.state = {cellSize: 5, board: modelStore.board};
@@ -50,7 +48,6 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.updateDimensions();
   }
 
-
   render(): JSX.Element {
     log.debug("Rendering Game of Life");
     // layout with fixed header from here: http://stackoverflow.com/questions/36515103/scrollable-div-content-area-with-fixed-header
@@ -59,15 +56,12 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
       <div className="editor-header" onKeyPress={this.stop}>
         <HeaderBarComponent title="Game of Life" fpsId="fps"
                             tooltip={`Version: ${Configuration.version()} commit: ${Configuration.revision()} build time: ${Configuration.BUILD_TIME}`}>
-          <button type="button" className="btn btn-default btn-s" onClick={this.clear}>Clear</button>
-          <button type="button" className="btn btn-default btn-s" onClick={this.initRandom}>Random</button>
-          <button type="button" className="btn btn-default btn-s" onClick={this.initRegular}>Regular</button>
-          <button type="button" className="btn btn-default btn-s" onClick={this.nextGeneration}>
-            Next Gen
-          </button>
-          <button type="button" className="btn btn-default btn-s" onClick={this.startInfinite}>
-            Run
-          </button>
+          <button type="button" className="btn btn-default btn-s" onClick={clear}>Clear</button>
+          <button type="button" className="btn btn-default btn-s" onClick={initRandom}>Random</button>
+          <button type="button" className="btn btn-default btn-s" onClick={initPentomino}>Pentomino</button>
+          <button type="button" className="btn btn-default btn-s" onClick={initRegular}>Regular</button>
+          <button type="button" className="btn btn-default btn-s" onClick={next}>Next Gen</button>
+          <button type="button" className="btn btn-default btn-s" onClick={this.startInfinite}>Run</button>
           <div className="btn btn-default btn-s">
             <label htmlFor="boardColumns" className="slider-label">Columns: ({this.state.board.maxX})</label>
 
@@ -91,21 +85,6 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
         </svg>
       </div >
     </div >;
-  }
-
-  initRandom(): void {
-    initRandom();
-  }
-
-  initRegular(): void {
-    initRegular();
-  }
-  nextGeneration(): void {
-    next();
-  }
-
-  clear(): void {
-    clear();
   }
 
   startInfinite(): void {
@@ -147,7 +126,6 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
   updateDimensions(): void {
     if (this.refs["svgRef"]) {
       // bounding box of all svg elements in canvas should be new size of viewport
-
       const rect: SVGRect = (this.refs["svgRef"] as any).getBBox();
 
       // determine viewport width and height, enlarge by padding width
@@ -173,7 +151,7 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     if (!this.stop()) {
       const {x, y}: Point = this.getBoardCoordinates(e);
       if (x >= 0 && x < this.state.board.maxX && y >= 0 && y < this.state.board.maxY) {
-        const newValue = !this.state.board.cell(x, y).isAlive;
+        const newValue = !this.state.board.cell(x, y);
         set(x, y, newValue);
       }
     }

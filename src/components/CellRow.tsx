@@ -1,9 +1,8 @@
 // lib imports
 import * as React from "react";
-import {observer} from "mobx-react";
-import {BoardEntryType} from "../stores/modelstore";
 import log from "../Logger";
 import {Cell} from "./cell";
+import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 
@@ -16,7 +15,7 @@ interface LocalProps {
   maxX: number;
   maxY: number;
   y: number;
-  boardRow: BoardEntryType[];
+  boardRow: Array<boolean>;
 }
 
 @observer
@@ -30,7 +29,7 @@ export class CellRow extends React.Component<LocalProps, any> {
     return <g>
       { this.props.boardRow.map((entry, x) =>
           <Cell key={x + this.props.maxX * this.props.y} x={x} y={this.props.y} cellSize={this.props.cellSize}
-                boardEntry={entry}/>)
+                alive={entry}/>)
       }
     </g>;
   }

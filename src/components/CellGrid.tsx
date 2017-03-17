@@ -29,7 +29,7 @@ export class CellGrid extends React.Component<LocalProps, any> {
     for (let y = 0; y < this.props.board.maxY; y++) {
       svgElements.push(<CellRow key={y} cellSize={this.props.cellSize} maxX={this.props.board.maxX}
                                 maxY={this.props.board.maxY} y={y}
-                                boardRow={this.props.board.cells().slice(this.props.board.maxX * y, this.props.board.maxX * (y + 1))}/>);
+                                boardRow={this.props.board.cells[y]}/>);
     }
     return <g>
       {svgElements}

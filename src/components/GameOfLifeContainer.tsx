@@ -169,7 +169,7 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     return false;
   }
 
-  private onMouseDown(e: any): void {
+  private onMouseDown(e: MouseEvent<SVGElement>): void {
     this.log("mousedown", e);
     this.processBoardClick(e.clientX, e.clientY);
   }

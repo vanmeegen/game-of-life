@@ -9,6 +9,8 @@ import {Configuration} from "../common/Configuration";
 import {Grid} from "./grid";
 import {CellGrid} from "./CellGrid";
 import {observer} from "mobx-react";
+import TouchEvent = React.TouchEvent;
+import MouseEvent = React.MouseEvent;
 
 interface LocalProps {
 
@@ -36,8 +38,10 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     this.changeBoardSize = this.changeBoardSize.bind(this);
     this.changeCellSize = this.changeCellSize.bind(this);
     this.autoGeneration = this.autoGeneration.bind(this);
+    this.processBoardClick = this.processBoardClick.bind(this);
+    this.onTouch = this.onTouch.bind(this);
     this.stop = this.stop.bind(this);
-    this.state = {cellSize: 5, board: modelStore.board};
+    this.state = {cellSize: 15, board: modelStore.board};
   }
 
   componentDidMount(): void {
@@ -56,28 +60,28 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
       <div className="editor-header" onKeyPress={this.stop}>
         <HeaderBarComponent title="Game of Life" fpsId="fps"
                             tooltip={`Version: ${Configuration.version()} commit: ${Configuration.revision()} build time: ${Configuration.BUILD_TIME}`}>
-          <button type="button" className="btn btn-default btn-s" onClick={clear}>Clear</button>
-          <button type="button" className="btn btn-default btn-s" onClick={initRandom}>Random</button>
-          <button type="button" className="btn btn-default btn-s" onClick={initPentomino}>Pentomino</button>
-          <button type="button" className="btn btn-default btn-s" onClick={initRegular}>Regular</button>
-          <button type="button" className="btn btn-default btn-s" onClick={next}>Next Gen</button>
-          <button type="button" className="btn btn-default btn-s" onClick={this.startInfinite}>Run</button>
-          <div className="btn btn-default btn-s">
+          <button type="button" className="btn btn-default btn-xs" onClick={clear}>Clear</button>
+          <button type="button" className="btn btn-default btn-xs" onClick={initRandom}>Random</button>
+          <button type="button" className="btn btn-default btn-xs" onClick={initPentomino}>Pentomino</button>
+          <button type="button" className="btn btn-default btn-xs" onClick={initRegular}>Regular</button>
+          <button type="button" className="btn btn-default btn-xs" onClick={next}>Next Gen</button>
+          <button type="button" className="btn btn-default btn-xs" onClick={this.startInfinite}>Run</button>
+          <div className="btn btn-default btn-xs slider-container">
             <label htmlFor="boardColumns" className="slider-label">Columns: ({this.state.board.maxX})</label>
 
             <input type="range" min="10" max="500" value={this.state.board.maxX} name="boardColumns"
                    title="number of board columns"
-                   onChange={this.changeBoardSize}/>
+                   onChange={this.changeBoardSize} className="slider-input"/>
           </div>
-          <div className="btn btn-default btn-s">
+          <div className="btn btn-default btn-xs slider-container">
             <label htmlFor="cellSize" className="slider-label">Cell: ({this.state.cellSize})</label>
             <input type="range" min="3" max="30" value={this.state.cellSize} name="cellSize" title="pixel per cell"
-                   onChange={this.changeCellSize}/>
+                   onChange={this.changeCellSize} className="slider-input"/>
           </div>
         </HeaderBarComponent>
       </div>
       < div className="editor-container" ref="containerRef">
-        <svg width="100%" height="100%" onMouseDown={this.onMouseDown} ref="svgRef">
+        <svg width="100%" height="100%" onMouseDown={this.onMouseDown} onTouchEnd={this.onTouch} ref="svgRef">
           <g>
             <Grid cellSize={this.state.cellSize} x={this.state.board.maxX} y={this.state.board.maxY}/>
             <CellGrid cellSize={this.state.cellSize} board={this.state.board}/>
@@ -146,10 +150,14 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     return false;
   }
 
-  private onMouseDown(e: any): void {
+  private onMouseDown(e: MouseEvent<SVGElement>): void {
     this.log("mousedown", e);
+    this.processBoardClick(e.clientX, e.clientY);
+  }
+
+  private processBoardClick(clientX: number, clientY: number): void {
+    const {x, y}: Point = this.getBoardCoordinates(clientX, clientY);
     if (!this.stop()) {
-      const {x, y}: Point = this.getBoardCoordinates(e);
       if (x >= 0 && x < this.state.board.maxX && y >= 0 && y < this.state.board.maxY) {
         const newValue = !this.state.board.cell(x, y);
         set(x, y, newValue);
@@ -157,8 +165,16 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
     }
   }
 
-  private getBoardCoordinates(e: any): Point {
-    const cpt = this.convertClientToSVG(e.clientX, e.clientY);
+  private onTouch(e: TouchEvent<SVGElement>): void {
+    this.log("touch", e);
+    if (e.changedTouches.length > 0) {
+      e.preventDefault();
+      this.processBoardClick(e.changedTouches[0].clientX, e.changedTouches[0].clientY);
+    }
+  }
+
+  private getBoardCoordinates(clientX: number, clientY: number): Point {
+    const cpt = this.convertClientToSVG(clientX, clientY);
     return new Point(Math.floor(cpt.x / this.state.cellSize), Math.floor(cpt.y / this.state.cellSize));
   }
 
@@ -174,7 +190,7 @@ export class GameOfLifeContainer extends React.Component<LocalProps, LocalState>
   }
 
   private log(evtName: string, e: any): void {
-    log.trace(evtName, e.target);
+    log.debug(evtName, e.target);
   }
 }
 

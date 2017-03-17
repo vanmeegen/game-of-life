@@ -148,7 +148,7 @@ export class Board {
 export class ModelStore extends StoreBase {
 
   private _board: Board;
-  private static DEFAULT_SIZE: number = 150;
+  private static DEFAULT_SIZE: number = 50;
 
   constructor() {
     super();

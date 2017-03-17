@@ -22,7 +22,7 @@ export class Cell extends React.Component<LocalProps, any> {
   }
 
   render(): JSX.Element {
-    log.debug("Rendering Cell " + this.props.x + "," + this.props.y);
+    log.trace("Rendering Cell " + this.props.x + "," + this.props.y);
     return <rect x={this.props.x * this.props.cellSize + 1} y={this.props.y * this.props.cellSize + 1}
                  width={this.props.cellSize - 2} height={this.props.cellSize - 2}
                  className={this.props.alive ? "field-filled" : "field-empty"}/>;

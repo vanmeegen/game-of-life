@@ -10,6 +10,7 @@ export type ActionType =
         | "next" /* calculate and render next generation*/
         | "initRandom" /* init cell with random life */
         | "initRegular" /* init cell with regular pattern */
+        | "initPentomino" /* init cell wit pentominos for long lasting generations */
         | "set"
         | "size";
 /* set life on position maxX,maxY to value (true or false) */

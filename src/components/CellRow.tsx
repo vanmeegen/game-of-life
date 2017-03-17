@@ -5,7 +5,6 @@ import {Cell} from "./cell";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
 import deepEqual = require("deep-equal");
-const shallowequal = require("shallowequal");
 
 /**
  * draw a grid

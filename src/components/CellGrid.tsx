@@ -5,7 +5,6 @@ import {Board} from "../stores/ModelStore";
 import log from "../Logger";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
-import shallowEqual = require("shallowequal");
 import deepEqual = require("deep-equal");
 
 /**

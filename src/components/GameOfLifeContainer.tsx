@@ -8,7 +8,6 @@ import {Point} from "../util/Geometry";
 import {Configuration} from "../common/Configuration";
 import {Grid} from "./grid";
 import {CellGrid} from "./CellGrid";
-import {observer} from "mobx-react";
 import TouchEvent = React.TouchEvent;
 import MouseEvent = React.MouseEvent;
 
@@ -23,7 +22,6 @@ interface LocalState {
 
 // App component
 
-@observer
 export class GameOfLifeContainer extends React.Component<LocalProps, LocalState> {
   /** padding around svg diagram to enabe moving elements outside of original bounds of container */
   private static PADDING_WIDTH: number = 10;

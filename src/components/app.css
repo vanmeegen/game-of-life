@@ -39,7 +39,7 @@ html, body {
 }
 
 .editor-menu {
-    flex: none;
+    flex: auto;
     margin: 5px;
 }
 
@@ -50,10 +50,18 @@ input[type="range"] {
     vertical-align: middle;
 }
 
+.slider-container {
+}
+
 .slider-label {
     display: inline-block;
     margin: auto;
 }
+
+.slider-input {
+    height: 1em;
+}
+
 .board-border {
     stroke-width: 1;
     stroke: rgb(0, 0, 0);

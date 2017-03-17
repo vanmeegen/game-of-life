@@ -9,6 +9,10 @@ export function initRegular(): void {
   Dispatcher.dispatch({type: "initRegular"});
 }
 
+export function initPentomino(): void {
+  Dispatcher.dispatch({type: "initPentomino"});
+}
+
 export function next(): void {
   Dispatcher.dispatch({type: "next"});
 }

@@ -3,10 +3,10 @@ import * as React from "react";
 import {CellRow} from "./cellrow";
 import {Board} from "../stores/ModelStore";
 import log from "../Logger";
-import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
-const shallowequal = require("shallowequal");
+import shallowEqual = require("shallowequal");
+import deepEqual = require("deep-equal");
 
 /**
  * draw a grid
@@ -17,10 +17,13 @@ interface LocalProps {
   board: Board;
 }
 
-@observer
 export class CellGrid extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
+  }
+
+  shouldComponentUpdate(nextProps: LocalProps): boolean {
+    return !deepEqual(nextProps, this.props);
   }
 
   render(): JSX.Element {

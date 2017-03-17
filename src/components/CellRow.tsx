@@ -2,9 +2,9 @@
 import * as React from "react";
 import log from "../Logger";
 import {Cell} from "./cell";
-import {observer} from "mobx-react";
 import ReactElement = React.ReactElement;
 import ReactNode = React.ReactNode;
+import deepEqual = require("deep-equal");
 const shallowequal = require("shallowequal");
 
 /**
@@ -19,14 +19,13 @@ interface LocalProps {
   boardRow: Array<boolean>;
 }
 
-@observer
 export class CellRow extends React.Component<LocalProps, any> {
   constructor(props: LocalProps) {
     super(props);
   }
 
   shouldComponentUpdate(nextProps: LocalProps): boolean {
-    return !shallowequal(nextProps, this.props);
+    return !deepEqual(nextProps, this.props);
   }
 
   render(): JSX.Element {

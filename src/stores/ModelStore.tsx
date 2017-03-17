@@ -2,7 +2,6 @@ import {Action} from "../actions/Action";
 import StoreBase from "./StoreBase";
 import log from "../Logger";
 import {Point} from "../util/Geometry";
-import {observable} from "mobx";
 
 // split array into rows to make it faster
 function getLifeCell(cells: boolean[][], x: number, y: number): boolean {
@@ -15,9 +14,9 @@ function setLifeCell(cells: boolean[][], x: number, y: number, newContent: boole
 
 
 export class Board {
-  @observable public maxX: number;
-  @observable public maxY: number;
-  @observable public cells: boolean[][];
+  public maxX: number;
+  public maxY: number;
+  public cells: boolean[][];
   private readonly NEIGHBOR_OFFSETS: Point[] = [new Point(-1, -1), new Point(-1, 0), new Point(-1, 1), new Point(0, -1), new Point(0, 1), new Point(1, -1), new Point(1, 0), new Point(1, 1)];
   private neighbors: number[];
 
@@ -56,6 +55,16 @@ export class Board {
     this.init(() => Math.random() < 0.3);
   }
 
+  public initPentomino(): void {
+    const shape = [[1, 0], [2, 0], [1, 1], [1, 2], [0, 1]];
+    this.initEmpty();
+    const gridStep = 40;
+    for (let y = gridStep / 2; y < this.maxX; y += gridStep) {
+      for (let x = gridStep / 2; x < this.maxX; x += gridStep) {
+        shape.forEach(([dx, dy]) => this.set(x + dx, y + dy, true));
+      }
+    }
+  }
   /**
    * initializes cell with regular pattern for better reproducability
    */
@@ -103,6 +112,10 @@ export class Board {
     }
   }
 
+  public clone(): Board {
+    return JSON.parse(JSON.stringify(this));
+  }
+
   public cell(x: number, y: number): boolean {
     return getLifeCell(this.cells, x, y);
   }
@@ -133,7 +146,7 @@ export class Board {
 export class ModelStore extends StoreBase {
 
   private _board: Board;
-  private static DEFAULT_SIZE: number = 150;
+  private static DEFAULT_SIZE: number = 50;
 
   constructor() {
     super();
@@ -153,13 +166,16 @@ export class ModelStore extends StoreBase {
   }
 
   accept(action: Action): void {
-    log.info("ModelStore accepting", action);
+    log.debug("ModelStore accepting", action);
     switch (action.type) {
       case "clear":
         this._board.initEmpty();
         break;
       case "initRandom":
         this._board.initRandom();
+        break;
+      case "initPentomino":
+        this._board.initPentomino();
         break;
       case "initRegular":
         this._board.initRegular();

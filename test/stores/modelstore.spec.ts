@@ -49,6 +49,10 @@ describe("the model store", () => {
   );
 
   describe("it calculates game of life rules correctly", () => {
+    beforeEach(() => {
+      modelStore = new ModelStore();
+    });
+
     it("calculates an empty board from an empty board", () => {
       modelStore.accept({type: "next"});
       let countAlive: number = 0;

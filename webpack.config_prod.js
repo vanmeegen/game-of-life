@@ -6,7 +6,6 @@ const common = require('./webpack.config');
 const prodConfig = Object.assign({}, common, {
   mode: "production",
       plugins: [
-        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
           'process.env': {
             'NODE_ENV': JSON.stringify('production')
@@ -31,7 +30,8 @@ const prodConfig = Object.assign({}, common, {
         })
       ],
   optimization: {
-    minimize: true
+    minimize: true,
+    noEmitOnErrors: true
   },
       module: {
         rules: common.module.rules.map(o => {

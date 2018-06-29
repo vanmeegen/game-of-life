@@ -36,14 +36,15 @@ Results
 System: Intel Core i5-3317U 1.7GHz running Windows 10
 Started with Random seed, wait for fps shown after 1 minute.
 
-Variant | Size | FPS | Browser 
--- | --: | --:
-Dumb React      | 150/5px | 0.3 | Edge 38.14393.0.0
-Dumb React      | 150/5px | 0.4 | IE 11 1.576.14393.0 Update 11.0.38
-Dumb React      | 150/5px | 0.7 | Firefox 51.0.1 (64-Bit)
-Dumb React      | 150/5px | 1.3 | Chrome 56.0.2924.87 (64-bit)
-Standard React  | 150/5px | 3.5 | Chrome 56.0.2924.87 (64-bit)
+| Variant        | Size    | FPS | Browser                            |
+|----------------|---------|-----|------------------------------------|
+| Dumb React     | 150/5px | 0.3 | Edge 38.14393.0.0                  |
+| Dumb React     | 150/5px | 0.4 | IE 11 1.576.14393.0 Update 11.0.38 |
+| Dumb React     | 150/5px | 0.7 | Firefox 51.0.1 (64-Bit)            |
+| Dumb React     | 150/5px | 1.3 | Chrome 56.0.2924.87 (64-bit)       |
+| Standard React | 150/5px | 3.5 | Chrome 56.0.2924.87 (64-bit)       |
 
+You can now import Markdown table code directly using File/Paste table data... dialog. 
 Standard React Implementation varies dependent on random data.
 Thus measurements were changed to "regular" data to have a fair comparison.
 

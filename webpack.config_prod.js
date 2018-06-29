@@ -4,9 +4,9 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const common = require('./webpack.config');
 
 const prodConfig = Object.assign({}, common, {
+  mode: "production",
       plugins: [
-        new webpack.NoErrorsPlugin(),
-        new webpack.optimize.OccurenceOrderPlugin(),
+        new webpack.NoEmitOnErrorsPlugin(),
         new webpack.DefinePlugin({
           'process.env': {
             'NODE_ENV': JSON.stringify('production')
@@ -21,25 +21,24 @@ const prodConfig = Object.assign({}, common, {
           __BUILD_TIME__: JSON.stringify(new Date().toUTCString()),
           __NODE_ENV__: JSON.stringify('production')
         }),
-        new webpack.optimize.UglifyJsPlugin({
-          compressor: {
-            warnings: false
-          }
-        }),
+
         // avoid browser caching of bundle
         new HtmlWebpackPlugin({
           hash: true,
           title: 'Game of Life',
           filename: '../index.html',
           template: 'assets.html'
-        })],
-
+        })
+      ],
+  optimization: {
+    minimize: true
+  },
       module: {
-        loaders: common.module.loaders.map(o => {
+        rules: common.module.rules.map(o => {
           return Object.assign(o, {loader: o.loader.replace('file-loader?name=img/[name].[ext]', 'file-loader?name=img/[name]-[hash:6].[ext]')})
         })
       }
     })
-    ;
+;
 
 module.exports = prodConfig;

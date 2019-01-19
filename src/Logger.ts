@@ -1,5 +1,5 @@
 import log = require("loglevel");
 
-log.setLevel(LogLevel.INFO);
+log.setLevel("info");
 
 export default log;

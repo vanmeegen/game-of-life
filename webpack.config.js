@@ -3,6 +3,7 @@ const webpack = require("webpack");
 
 module.exports = {
   entry: {web: "./src/index.tsx"},
+  mode: "development",
   output: {
     // output path
     path: path.resolve(__dirname, 'public/dist'),
@@ -14,11 +15,11 @@ module.exports = {
 
   resolve: {
     // Add '.ts' and '.tsx' as resolvable extensions.
-    extensions: ["", ".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".min.js"],
+    extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js", ".min.js"],
     alias: {"ag-grid-root": __dirname + "/node_modules/ag-grid"}
   },
   module: {
-    loaders: [
+    rules: [
       // All files with a '.ts' or '.tsx' extension will be handled by 'ts-loader'.
       {test: /\.tsx?$/, loader: "ts-loader"},
       {test: /\.css$/, loader: 'style-loader!css-loader'},
@@ -28,16 +29,10 @@ module.exports = {
       {test: /\.eot(\?v=\d+\.\d+\.\d+)?$/, loader: "file-loader"},
       {test: /\.(woff|woff2)$/, loader: "url-loader?prefix=font/&limit=5000"},
       {test: /\.ttf(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=application/octet-stream"},
-      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml"}
-    ],
-
-    preLoaders: [
+      {test: /\.svg(\?v=\d+\.\d+\.\d+)?$/, loader: "url-loader?limit=10000&mimetype=image/svg+xml"},
       // All output '.js' files will have any sourcemaps re-processed by 'source-map-loader'.
-      {test: /\.js$/, loader: "source-map-loader"},
-      {
-        test: /\.tsx?$/,
-        loader: 'tslint-loader'
-      }
+      {test: /\.js$/, loader: "source-map-loader", enforce: "pre"},
+      {test: /\.tsx?$/, loader: 'tslint-loader', enforce: "pre"}
     ]
   },
 
